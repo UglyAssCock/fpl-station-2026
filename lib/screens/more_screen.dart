@@ -8,7 +8,6 @@ import '../services/fpl_api_service.dart';
 import '../theme.dart';
 import 'player_detail_screen.dart';
 
-/// Hub for Pages 6, 8, 9, 12, 13, 14, 15, 16, 17
 class MoreScreen extends StatefulWidget {
   final VoidCallback onLogout;
 
@@ -51,7 +50,6 @@ class _MoreScreenState extends State<MoreScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // Page 17: Profile & Settings Card
         Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
@@ -102,13 +100,13 @@ class _MoreScreenState extends State<MoreScreen> {
           ),
         ),
         const SizedBox(height: 16),
-
         if (boot == null)
           const Center(
-              child: Padding(
-            padding: EdgeInsets.all(24),
-            child: CircularProgressIndicator(),
-          ))
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: CircularProgressIndicator(),
+            ),
+          )
         else ...[
           _MenuTile(
             icon: Icons.people_alt_outlined,
@@ -161,7 +159,7 @@ class _MoreScreenState extends State<MoreScreen> {
             ),
           ),
           _MenuTile(
-            icon: Icons.MemoryOutlined,
+            icon: Icons.memory,
             title: 'Chips Guide & Status',
             subtitle: 'Wildcard, Free Hit, Bench Boost, Triple Captain',
             onTap: () => Navigator.push(
@@ -190,12 +188,12 @@ class _MoreScreenState extends State<MoreScreen> {
             ),
           ),
         ],
-
         const Divider(height: 28),
         SwitchListTile(
           title: const Text('Dark Mode Theme',
               style: TextStyle(fontWeight: FontWeight.bold)),
-          subtitle: const Text('Switch between Station Dark Navy & Clean White'),
+          subtitle:
+              const Text('Switch between Station Dark Navy & Clean White'),
           value: ThemeController.themeMode.value == ThemeMode.dark,
           onChanged: (_) {
             ThemeController.toggleTheme();
@@ -255,7 +253,6 @@ class _MenuTile extends StatelessWidget {
   }
 }
 
-/// Page 8: Fixtures + FDR Color Grid
 class FixturesFdrScreen extends StatefulWidget {
   final FplBootstrapData bootstrap;
   const FixturesFdrScreen({super.key, required this.bootstrap});
@@ -302,9 +299,8 @@ class _FixturesFdrScreenState extends State<FixturesFdrScreen>
   @override
   Widget build(BuildContext context) {
     final startGw = widget.bootstrap.currentGameweek.id;
-    final gws = List.generate(
-        5, (i) => (startGw + i) <= 38 ? (startGw + i) : 38);
-
+    final gws =
+        List.generate(5, (i) => (startGw + i) <= 38 ? (startGw + i) : 38);
     final gwFixtures =
         _allFixtures.where((f) => f.event == _selectedGw).toList();
 
@@ -357,8 +353,8 @@ class _FixturesFdrScreenState extends State<FixturesFdrScreen>
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 14, vertical: 5),
                             child: ListTile(
-                              leading: ClubBadge(
-                                  teamCode: th?.code ?? 0, size: 28),
+                              leading:
+                                  ClubBadge(teamCode: th?.code ?? 0, size: 28),
                               title: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -389,8 +385,8 @@ class _FixturesFdrScreenState extends State<FixturesFdrScreen>
                                           fontWeight: FontWeight.bold)),
                                 ],
                               ),
-                              trailing: ClubBadge(
-                                  teamCode: ta?.code ?? 0, size: 28),
+                              trailing:
+                                  ClubBadge(teamCode: ta?.code ?? 0, size: 28),
                             ),
                           );
                         },
@@ -398,8 +394,6 @@ class _FixturesFdrScreenState extends State<FixturesFdrScreen>
                     ),
                   ],
                 ),
-
-                // FDR Color Grid across upcoming 5 Gameweeks
                 SingleChildScrollView(
                   padding: const EdgeInsets.all(12),
                   child: Column(
@@ -424,8 +418,7 @@ class _FixturesFdrScreenState extends State<FixturesFdrScreen>
                               final match = _allFixtures.firstWhere(
                                 (f) =>
                                     f.event == gwNum &&
-                                    (f.teamH == club.id ||
-                                        f.teamA == club.id),
+                                    (f.teamH == club.id || f.teamA == club.id),
                                 orElse: () => FixtureItem(
                                   id: 0,
                                   event: gwNum,
@@ -491,7 +484,6 @@ class _FixturesFdrScreenState extends State<FixturesFdrScreen>
   }
 }
 
-/// Page 9: Clubs Page, Squad & Form
 class ClubsScreen extends StatelessWidget {
   final FplBootstrapData bootstrap;
   const ClubsScreen({super.key, required this.bootstrap});
@@ -510,8 +502,7 @@ class ClubsScreen extends StatelessWidget {
             ..sort((a, b) => b.form.compareTo(a.form));
           final avgForm = squad.isEmpty
               ? 0.0
-              : squad.map((e) => e.form).reduce((a, b) => a + b) /
-                  squad.length;
+              : squad.map((e) => e.form).reduce((a, b) => a + b) / squad.length;
 
           return ExpansionTile(
             leading: ClubBadge(teamCode: club.code, size: 32),
@@ -528,12 +519,11 @@ class ClubsScreen extends StatelessWidget {
                         PlayerDetailScreen(player: p, bootstrap: bootstrap),
                   ),
                 ),
-                leading:
-                    PlayerPhoto(playerCode: p.code, width: 34, height: 42),
+                leading: PlayerPhoto(playerCode: p.code, width: 34, height: 42),
                 title: Text(p.webName,
                     style: const TextStyle(fontWeight: FontWeight.bold)),
-                subtitle:
-                    Text('${p.positionShort} • Form ${p.form} • ${p.priceString}'),
+                subtitle: Text(
+                    '${p.positionShort} • Form ${p.form} • ${p.priceString}'),
                 trailing: Text('${p.totalPoints} pts',
                     style: const TextStyle(fontWeight: FontWeight.bold)),
               );
@@ -545,7 +535,6 @@ class ClubsScreen extends StatelessWidget {
   }
 }
 
-/// Page 12: Live Matches & My Players' Live Points
 class LiveMatchesScreen extends StatefulWidget {
   final FplBootstrapData bootstrap;
   const LiveMatchesScreen({super.key, required this.bootstrap});
@@ -616,8 +605,8 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
                   final bps = st['bps'] ?? 0;
                   return ListTile(
                     dense: true,
-                    leading: PlayerPhoto(
-                        playerCode: p.code, width: 34, height: 42),
+                    leading:
+                        PlayerPhoto(playerCode: p.code, width: 34, height: 42),
                     title: Text(
                       '${p.webName} ${pick.isCaptain ? "(C)" : ""}',
                       style: const TextStyle(fontWeight: FontWeight.bold),
@@ -666,7 +655,6 @@ class _LiveMatchesScreenState extends State<LiveMatchesScreen> {
   }
 }
 
-/// Page 13: Local Planner
 class LocalPlannerScreen extends StatefulWidget {
   final FplBootstrapData bootstrap;
   const LocalPlannerScreen({super.key, required this.bootstrap});
@@ -770,8 +758,7 @@ class _LocalPlannerScreenState extends State<LocalPlannerScreen> {
                         icon: const Icon(Icons.delete_outline),
                         onPressed: () async {
                           setState(() => _plans.removeAt(idx));
-                          final prefs =
-                              await SharedPreferences.getInstance();
+                          final prefs = await SharedPreferences.getInstance();
                           await prefs.setString(
                               'fpl_local_plans', jsonEncode(_plans));
                         },
@@ -788,7 +775,6 @@ class _LocalPlannerScreenState extends State<LocalPlannerScreen> {
   }
 }
 
-/// Page 14: Chips Explanations and Status
 class ChipsStatusScreen extends StatefulWidget {
   const ChipsStatusScreen({super.key});
 
@@ -837,12 +823,14 @@ class _ChipsStatusScreenState extends State<ChipsStatusScreen> {
     try {
       final entryId = AuthService.currentSession?.entryId ?? 0;
       final data = await FplApiService.getMyTeam(entryId);
-      final list = data['chips'] as List? ?? [];
+      final rawChips = data['chips'];
       final map = <String, String>{};
-      for (final c in list) {
-        if (c is Map<String, dynamic>) {
-          map[c['name'].toString()] =
-              c['status_for_entry']?.toString() ?? 'available';
+      if (rawChips is Iterable) {
+        for (final c in rawChips) {
+          if (c is Map<String, dynamic>) {
+            map[c['name'].toString()] =
+                c['status_for_entry']?.toString() ?? 'available';
+          }
         }
       }
       if (mounted) {
@@ -884,9 +872,8 @@ class _ChipsStatusScreenState extends State<ChipsStatusScreen> {
                       label: Text(
                         status,
                         style: TextStyle(
-                          color: isAvail
-                              ? AppColors.emeraldGreen
-                              : Colors.grey,
+                          color:
+                              isAvail ? AppColors.emeraldGreen : Colors.grey,
                           fontWeight: FontWeight.bold,
                           fontSize: 11,
                         ),
@@ -900,7 +887,6 @@ class _ChipsStatusScreenState extends State<ChipsStatusScreen> {
   }
 }
 
-/// Page 15: News and Injuries Sorted by Ownership
 class NewsInjuriesScreen extends StatelessWidget {
   final FplBootstrapData bootstrap;
   const NewsInjuriesScreen({super.key, required this.bootstrap});
@@ -930,8 +916,7 @@ class NewsInjuriesScreen extends StatelessWidget {
                       PlayerDetailScreen(player: p, bootstrap: bootstrap),
                 ),
               ),
-              leading:
-                  PlayerPhoto(playerCode: p.code, width: 40, height: 50),
+              leading: PlayerPhoto(playerCode: p.code, width: 40, height: 50),
               title: Text(
                 '${p.webName} (${club?.shortName ?? ''}) • ${p.selectedByPercent}%',
                 style: const TextStyle(fontWeight: FontWeight.bold),
@@ -957,7 +942,6 @@ class NewsInjuriesScreen extends StatelessWidget {
   }
 }
 
-/// Page 16: In-App Notifications List (Deadlines & High-Impact Injuries)
 class NotificationsScreen extends StatelessWidget {
   final FplBootstrapData bootstrap;
   const NotificationsScreen({super.key, required this.bootstrap});
