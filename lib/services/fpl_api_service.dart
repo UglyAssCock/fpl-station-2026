@@ -51,11 +51,9 @@ class FplBootstrapData {
 }
 
 class FplApiService {
-  // In-memory cache for bootstrap-static
   static FplBootstrapData? _cachedBootstrap;
   static List<FixtureItem>? _cachedFixtures;
 
-  /// Public endpoint: bootstrap-static/ (cached in memory)
   static Future<FplBootstrapData> getBootstrapStatic(
       {bool forceRefresh = false}) async {
     if (_cachedBootstrap != null && !forceRefresh) {
@@ -95,7 +93,6 @@ class FplApiService {
     return _cachedBootstrap!;
   }
 
-  /// Public endpoint: fixtures/
   static Future<List<FixtureItem>> getFixtures(
       {int? eventId, bool forceRefresh = false}) async {
     if (eventId == null && _cachedFixtures != null && !forceRefresh) {
@@ -112,7 +109,8 @@ class FplApiService {
       throw Exception('Failed to load fixtures (${resp.statusCode})');
     }
 
-    final list = (jsonDecode(resp.body) as List)
+    final decoded = jsonDecode(resp.body) as List;
+    final list = decoded
         .map((e) => FixtureItem.fromJson(e as Map<String, dynamic>))
         .toList();
 
@@ -122,7 +120,6 @@ class FplApiService {
     return list;
   }
 
-  /// Public endpoint: element-summary/{id}/
   static Future> getElementSummary(int playerId) async {
     final resp = await http
         .get(
@@ -136,7 +133,6 @@ class FplApiService {
     return jsonDecode(resp.body) as Map<String, dynamic>;
   }
 
-  /// Public endpoint: event/{gw}/live/
   static Future>> getEventLive(int gw) async {
     final resp = await http
         .get(
@@ -158,7 +154,6 @@ class FplApiService {
     return result;
   }
 
-  /// Public endpoint: event-status/
   static Future<List>> getEventStatus() async {
     final resp = await http
         .get(
@@ -173,7 +168,6 @@ class FplApiService {
         .toList();
   }
 
-  /// Public endpoint: entry/{id}/ (Also includes the manager's classic leagues)
   static Future> getEntry(int entryId) async {
     final resp = await http
         .get(
@@ -187,7 +181,6 @@ class FplApiService {
     return jsonDecode(resp.body) as Map<String, dynamic>;
   }
 
-  /// Public endpoint: entry/{id}/event/{gw}/picks/
   static Future> getEntryEventPicks(
       int entryId, int gw) async {
     final resp = await http
@@ -202,7 +195,6 @@ class FplApiService {
     return jsonDecode(resp.body) as Map<String, dynamic>;
   }
 
-  /// Logged-in endpoint: my-team/{id}/
   static Future> getMyTeam(int entryId) async {
     final resp = await http
         .get(
@@ -213,12 +205,10 @@ class FplApiService {
     if (resp.statusCode == 200) {
       return jsonDecode(resp.body) as Map<String, dynamic>;
     }
-    // Fallback to current GW picks if my-team requires re-auth
     final boot = await getBootstrapStatic();
     return getEntryEventPicks(entryId, boot.currentGameweek.id);
   }
 
-  /// Logged-in endpoint: entry/{id}/transfers-latest/ (with fallback to transfers/)
   static Future<List>> getTransfersLatest(
       int entryId) async {
     final resp = await http
@@ -248,7 +238,6 @@ class FplApiService {
     return [];
   }
 
-  /// Public endpoint: leagues-classic/{id}/standings/
   static Future> getLeagueStandings(int leagueId) async {
     final resp = await http
         .get(
